@@ -1,6 +1,5 @@
 #!/dist/anaconda/bin/python
 
-# from /u/home/cegerer/src/sharedfuncs import *
 from matplotlib import cm
 from functools import reduce
 from sharedfuncs import *
