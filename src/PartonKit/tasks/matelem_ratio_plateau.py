@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors
 import pylab # to save figures to file
 import sys,optparse
-from util import *
+from util.ratio_util import correlator
 
 usage = "Usage: %prog [options] "
 parser = optparse.OptionParser(usage);

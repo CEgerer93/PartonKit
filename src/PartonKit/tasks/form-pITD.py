@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-## JLAB !
-#!/dist/anaconda/bin/python
-#sys.path.append('/u/home/cegerer/src')
-#---------------------------------------
 import sys,optparse
 import h5py
 import numpy as np
@@ -13,9 +9,7 @@ import scipy.special as special
 import pylab # to save figures to file
 from collections import OrderedDict
 
-from pitd_util import *
-sys.path.append('/home/colin/QCD/pseudoDists')
-import fit_util
+from util.pitd_util import pitd
 
 usage = "Usage: %prog [options] "
 parser = optparse.OptionParser(usage);
