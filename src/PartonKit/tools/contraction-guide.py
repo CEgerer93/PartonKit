@@ -1,15 +1,12 @@
 #!/usr/bin/python3
 
-import numpy as np
-import sys,optparse
-import pgitd_util as gpd
+import optparse
+from util.pgitd_util import pgitd
 
 # Parse command line options
 usage = "usage: %prog [options] "
 parser = optparse.OptionParser(usage) ;
 
-# parser.add_option("-s", "--srcMom", type="str", default='',
-#                   help='3-tuple of src momentum (default = '')')
 parser.add_option("-x", "--xmom_range", type="str", default='x.x',
                   help='Range of x-momenta to consider at src/snk (default = x.x)')
 parser.add_option("-y", "--ymom_range", type="str", default='x.x',
@@ -20,15 +17,8 @@ parser.add_option("-a", type="float", default=0.094,
                   help='Lattice spacing (default = 0.094)')
 parser.add_option("-L", type="int", default=32,
                   help='Spatial extent (default = 32)')
-# parser.add_option("-p", "--momz", type="int", default=0,
-#                   help='Maximum abs(momz) of elementals prior to phasing (default = '')')
-# parser.add_option("-c", "--thisP", type="str", default="",
-#                   help='Print viable xy momentum combinations for this z-momenum (default='')')
-# parser.add_option("-z", "--findZeroXi", type="int", default="0",
-#                   help='Find momentum combinations yielding zero skewness (default = 0)')
 
 (options, args) = parser.parse_args()
-# srcMom=options.srcMom
 
 mass=1.1230844097
 # Make an array of all computed genprop momentum transfers
@@ -40,7 +30,6 @@ Q=['0.0.1','0.0.-1','0.0.2','0.0.-2',\
 modQx=int(max([tx.split('.')[0] for tx in Q]))
 modQy=int(max([tx.split('.')[1] for tx in Q]))
 modQz=int(max([tx.split('.')[2] for tx in Q]))
-
 
 
 # Get range of xy momenta
@@ -81,7 +70,7 @@ for pfz in range(-6,7):
                             else:
 
                                 # Compute skewness/momentum transfer for these src/snkMom
-                                mat=gpd.pgitd(snkMom,srcMom,mass,options.a,options.L)
+                                mat=pgitd(snkMom,srcMom,mass,options.a,options.L)
                                 mat.skewness()
                                 mat.transfer()
                                 
@@ -101,7 +90,7 @@ for t in twoPts:
 print("Unique 2pts needed:")
 for u in uniq2pts:
     print("2pt  --->  %s"%u)
-# print(uniq2pts)
+
                                     
 # Determine all snk-momenta consistent with momentum transfer
 for q in Q:
@@ -114,7 +103,7 @@ for q in Q:
 
 
     # Determine the skewness/momentum transfer
-    mat=gpd.pgitd(snkMom,srcMom,mass)
+    mat=pgitd(snkMom,srcMom,mass)
     mat.skewness()
     mat.transfer()
 
@@ -127,9 +116,3 @@ for q in Q:
             print("Zero skewness for [pf, pi] = [ (%s,%s,%s), (%s,%s,%s) ]"\
                 %(snkMom.split('.')[0],snkMom.split('.')[1],snkMom.split('.')[2],\
                   srcMom.split('.')[0],srcMom.split('.')[1],srcMom.split('.')[2]))
-
-
-
-
-                        
-   

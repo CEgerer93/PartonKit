@@ -1,21 +1,16 @@
 #!/usr/bin/python3
 
 import numpy as np
-import matplotlib.pyplot as plt
-import sys,optparse
-sys.path.append("/home/colin/QCD/pseudoDists/strFuncViz")
-sys.path.append("/home/colin/QCD/pseudoDists")
-import pdf_utils
-import common_fig
+import optparse
+from util.pdf_utils import alphaS, Cf, MU
+import util.common_fig
 from scipy import integrate
 from scipy import special as spec
 
-pdf_utils.alphaS=0.303
+alphaS=0.303
 
 usage = "Usage: %prog [options] "
 parser = optparse.OptionParser(usage);
-# parser.add_option("-z", type="int", default=-1,
-#                   help='Z-sep to consider (default = -1)')
 parser.add_option("--xi", type="float", default=0.0,
                   help='Skewness (default = 0.0)')
 parser.add_option("-a", "--alpha", type="float", default=-0.5,
@@ -25,19 +20,14 @@ parser.add_option("-b", "--beta", type="float", default=2.0,
 # Parse the input arguments
 (options, args) = parser.parse_args()
 
+print("MU = %.5f"%MU)
 
 
-print("MU = %.5f"%pdf_utils.MU)
-
-
-
-# NU=np.linspace(0,3,100)
 NU=np.linspace(0,20,100)
 
 
 def gpd(x):
     return np.power(x,options.alpha)*np.power(1-x,options.beta)*(1.0/spec.beta(options.alpha+1,options.beta+1))
-
 
 
 fig2 = plt.figure(figsize=(10,6)); ax2=fig2.gca()
@@ -58,9 +48,7 @@ ax3.set_ylabel(r'$\widetilde{\mathcal{I}}(\nu,\xi,t,\mu^2)$')
 def gitd(nu):
     sr = lambda x: np.cos(nu*x)*gpd(x)
     si = lambda x: np.sin(nu*x)*gpd(x)
-    # return integrate.quad(sr,0,1)[0]
     return integrate.quad(si,0,1)[0]
-    # return complex(integrate.quad(sr,0,1)[0],integrate.quad(si,0,1)[0])
 GITD=[gitd(nu) for nu in NU]
 ax3.plot(NU,GITD)
 
@@ -105,21 +93,15 @@ for n,xi in enumerate([0,1.0/3,0.5,1]):
     # REAL
     #################
     #################
-    # # Default alpha/beta
-    # ax4.plot([10,12],[-2-n*0.15,-2-n*0.15],color='gray',ls=styles[n])
-    # ax4.text(12.2,-2-n*0.15,r'$\xi=%.3f$'%xi,fontsize=16,verticalalignment='center')
-    # # # Default alpha=0.5 / beta=4.0
-    # # ax4.plot([10,12],[-3.25-n*0.25,-3.25-n*0.25],color='gray',ls=styles[n])
-    # # ax4.text(12.2,-3.25-n*0.25,r'$\xi=%.3f$'%xi,fontsize=16,verticalalignment='center')
+    # # Default alpha=0.5 / beta=4.0
+    # ax4.plot([10,12],[-3.25-n*0.25,-3.25-n*0.25],color='gray',ls=styles[n])
+    # ax4.text(12.2,-3.25-n*0.25,r'$\xi=%.3f$'%xi,fontsize=16,verticalalignment='center')
     #################
     #################
     # IMAG
     #################
     #################
-    # # Default alpha/beta
-    # ax4.plot([10,12],[1.05-n*0.1,1.05-n*0.1],color='gray',ls=styles[n])
-    # ax4.text(12.2,1.05-n*0.1,r'$\xi=%.3f$'%xi,fontsize=16,verticalalignment='center')
-    # # Default alpha=0.5 / beta=4.0
+    # Default alpha=0.5 / beta=4.0
     ax4.plot([10,12],[1.8-n*0.2,1.8-n*0.2],color='gray',ls=styles[n])
     ax4.text(12.2,1.8-n*0.2,r'$\xi=%.3f$'%xi,fontsize=16,verticalalignment='center')
     
@@ -133,24 +115,9 @@ fig5 = plt.figure(figsize=(12,8)); ax5=fig5.gca()
 ax5.set_xlabel(r'$\nu$')
 ax5.set_ylabel(r'$\mathfrak{Re}\ \mathfrak{M}\left(\nu,\xi,t,z^2\right)$')
 for z in range(1,9):
-    RPGITD=[i - ((pdf_utils.alphaS*pdf_utils.Cf)/(2*np.pi))*(np.log( (np.exp(2*np.euler_gamma+1)/4)*np.power(pdf_utils.MU*z,2) )*BOTimesGITD[n]+LOTimesGITD[n]) for n,i in enumerate(GITD) ]
+    RPGITD=[i - ((alphaS*Cf)/(2*np.pi))*(np.log( (np.exp(2*np.euler_gamma+1)/4)*np.power(MU*z,2) )*BOTimesGITD[n]+LOTimesGITD[n]) for n,i in enumerate(GITD) ]
     ax5.plot(NU,RPGITD,label=r'$z=%i$'%z)
 ax5.legend()
-
-
-# totITDCorrection=[((-pdf_utils.alphaS*pdf_utils.Cf)/(2*np.pi))\
-#                   *((np.log(np.power(options.z*pdf_utils.muRenorm,2)/4)+1+2*np.euler_gamma)\
-#                     *b+l) for b,l in zip(BOTimesITD,LOTimesITD)]
-
-# ############### Ratio of convolution to orig ITD
-# fig5 = plt.figure(figsize=(10,6)); ax5=fig5.gca()
-# ax5.set_xlabel(r'$\nu$')
-# ax5.set_ylabel(r'$Corr$')
-
-# # ax5.plot(NU,[a/b for a,b in zip(BOTimesITD,ITD)],color='orange')
-# ax5.plot(NU,totITDCorrection,color='black',label='Correction to ITD')
-# ax5.plot(NU,[n/d for n,d in zip(totITDCorrection,ITD)],color='gray',label='Corr/ITD Ratio')
-# ax5.legend(loc='upper right')
 
 
 fig4.savefig("KCrossI_xi%.3f_alpha%.3f_beta%.3f.pdf"%(options.xi,options.alpha,options.beta),bbox_inches='tight',pad_inches=0.1)

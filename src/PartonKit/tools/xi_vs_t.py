@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import numpy as np
-import sys,optparse
+import optparse
 import matplotlib.pyplot as plt
 import pylab
 from matplotlib import cm
@@ -58,14 +58,9 @@ if options.lightBkgd == 0:
 hbarc=0.1973269804
 a=0.094
 L=32.0
-# M=0.356 # pion GeV
-# M=1.1230844097 # nucleon GeV
 M=0.535 # nucleon lattice units
 
-
 # Color pts based on t^2 value
-
-
 def makePerp(q):
     tmp=[]
     for qq in Q:
@@ -76,10 +71,6 @@ def makePerp(q):
 
     return tmp
     
-    
-def dispersion(p):
-    
-    return 
 
 Q=['0.0.1','0.0.-1','0.0.2','0.0.-2',\
    '0.1.0','0.1.1','0.1.-1','0.1.2','0.1.-2',\
@@ -113,7 +104,6 @@ for i in P1_z:
             skewness_tmp.append((1.0*(i-j))/(i+j))
             skt=(1.0*(i-j))/(i+j)
 
-
         for n,q in enumerate(Q):
             print(q)
             # If
@@ -127,53 +117,14 @@ for i in P1_z:
                 ax.scatter(skt,tvalue,marker='o',\
                            s=ptSize,alpha=0.75,\
                            color=cm.RdYlGn(int(tvalue*-72.85714285714286)))
-                           # color=cm.nipy_spectral(int(tvalue*-72.85714285714286)))
-
             
 # print skewness
-
 skewness=np.unique(skewness_tmp)
 T=np.unique(T_tmp)
 
-
 ax.set_xlabel(r'$\xi$')
 ax.set_ylabel(r'$t=(p_i-p_f)^2\quad(\rm{GeV}^2)$')
-# plt.ylim([-1.5,0.05])
-
 fig.savefig("xi_vs_t_estimates%s.%s"%(suffix,form),dpi=600,\
             transparent=truthTransparent,\
             bbox_inches='tight',pad_inches=0.1,format=form)
-
-
-
-
-# # New figures for 3d viewing
-# fig3d=plt.figure(figsize=(10,8.4))
-# ax3d=fig3d.add_subplot(projection='3d')
-# ax3d.set_xlabel(r'$\nu_i$')
-# ax3d.set_ylabel(r'$\nu_f$')
-# ax3d.set_zlabel(r'$t$')
-
-
-# zseps=np.linspace(0,8,9)
-# pi=[ (2*np.pi/L)*n for n in range(0,7) ]
-# pf=[ (2*np.pi/L)*n for n in range(0,7) ]
-
-# nu_i=[]; nu_f=[]
-# for p in pi:
-#     for z in zseps:
-#         nu_i.append(p*z)
-# nu_f=nu_i
-
-# # nu_i,nu_f = np.meshgrid(nu_i,nu_f)
-
-
-# z=[np.cos(nu_i[n]*f) for n,f in enumerate(nu_f)]
-
-# ax3d.plot_trisurf(nu_i,nu_f,z,color='red')
-
-
-
 plt.show()
-
-

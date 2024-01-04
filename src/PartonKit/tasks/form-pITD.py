@@ -1,14 +1,7 @@
 #!/usr/bin/python3
 
-import sys,optparse
+import optparse
 import h5py
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy.integrate as integrate
-import scipy.special as special
-import pylab # to save figures to file
-from collections import OrderedDict
-
 from util.pitd_util import pitd
 
 usage = "Usage: %prog [options] "
@@ -16,12 +9,6 @@ parser = optparse.OptionParser(usage);
 
 parser.add_option("-e", "--ensem", type="str", default='',
                   help='Ensemble name (default='')')
-# parser.add_option("-m", "--boostMom", type="str", default='',
-#                   help='Momentum of rpITD numerator X.X.X (default = '')')
-# parser.add_option("-n", "--normMom", type="str", default='',
-#                   help='Momentum of rpITD denominator X.X.X (default = '')')
-# parser.add_option("-z", "--disp", type="str", default='x.x.x',
-#                   help='Displacement of rpITD numerator (default = x.x.x)')
 parser.add_option("-I", "--insertion", type="int", default="-1",
                   help='Gamma matrix to consider (default = -1)')
 parser.add_option("-c", "--cfgs", type="int", default=1,
@@ -49,7 +36,6 @@ if not(options.adat):
         h=h5py.File(options.pitdAmplitudesH5,'r')
     except:
         raise Exception("Pseudo H5 file not found - adat constructed dat files not to be read")
-        sys.exit()
 #-----------------------------------------------------------------------------------------------
 
 
@@ -60,10 +46,6 @@ pitd=pitd(options.pitdAmplitudesH5,options.matelemsH5,\
           applyCP=options.PARITY)
 pitd.extract()
 
-
-# for K in pitd.amplitudes['R'].keys():
-#     print(sum(pitd.amplitudes['R'][K]['real']['jks'][:])/len(pitd.amplitudes['R'][K]['real']['jks']))
-# sys.exit()
 
 
 pitd.reducedPITD('Y',renormWithMatelems=False)

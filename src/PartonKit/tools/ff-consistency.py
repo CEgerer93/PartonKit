@@ -1,14 +1,10 @@
 #!/usr/bin/python3
 
 import numpy as np
-import matplotlib.pyplot as plt
-import sys,optparse
+import optparse
 import h5py
-
-sys.path.append("/home/colin/QCD/pseudoDists/strFuncViz")
-sys.path.append("/home/colin/QCD/pseudoDists/analysis/py-scripts/pseudo")
-import common_fig
-import pitd_util
+import util.common_fig
+from util.pitd_util import as_tuple, momTrans, HBARC
 
 
 # Vector renormalization
@@ -162,29 +158,15 @@ axGE.errorbar(-1.0,0.0,yerr=0.0,color='red',fmt='^',mfc=None,capsize=2,\
 ##########################################################################################
 ##########################################################################################
 
-
-
-    
-
-
 # From GPD analysis
 #  A1 == F1
 #  A4 == F1 + F2
 def GE(A1,A4,Q2):
     return A1-((Q**2)/(4*mass**2))*(A4-A1)
-    # return F1(Q2)-((Q**2)/(4*mass**2))*F2(Q2)
 def GM(A4,Q2):
     return A4
-    # return F1(Q2)+F2(Q2)
 
-
-
-
-
-
-# amps={'A1': {}, 'A4': {} }
 amps={'A1': [], 'A4': [] }
-
 
 h=h5py.File(options.ampH5File,'r')
 h2pt=h5py.File(options.twoPtH5File,'r')
@@ -195,8 +177,8 @@ for k,v in amps.items():
     for pfpi in [options.selectPfPi] if options.selectPfPi else h['/%s/mean/%s'%(k,comp)].keys():
         tmpPf=pfpi.split('_')[0][2:]
         tmpPi=pfpi.split('_')[1][2:]
-        pf='%s.%s.%s'%pitd_util.as_tuple(tmpPf)
-        pi='%s.%s.%s'%pitd_util.as_tuple(tmpPi)
+        pf='%s.%s.%s'%as_tuple(tmpPf)
+        pi='%s.%s.%s'%as_tuple(tmpPi)
         
         Ef=Ei=0.0;
         
@@ -208,7 +190,7 @@ for k,v in amps.items():
         
 
         # Mass converted from dimensionless to GeV in momTrans call
-        Q2=-1.0*pitd_util.momTrans(Ef,pf,Ei,pi,mass,32,0.094,computeFromDispReln=True)
+        Q2=-1.0*momTrans(Ef,pf,Ei,pi,mass,32,0.094,computeFromDispReln=True)
         print(Q2)
         
 
@@ -218,7 +200,7 @@ for k,v in amps.items():
 
 
 # Convert mass to GeV
-mass*=(pitd_util.HBARC/0.094)
+mass*=(HBARC/0.094)
 print(mass)
 
 

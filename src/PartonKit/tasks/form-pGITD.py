@@ -1,14 +1,8 @@
 #!/usr/bin/python3
 
-import sys,optparse
+import optparse
 import h5py
 import numpy as np
-import matplotlib.pyplot as plt
-import scipy.integrate as integrate
-import scipy.special as special
-import pylab # to save figures to file
-from collections import OrderedDict
-
 from util.pitd_util import pgitd
 from util.fit_util import SR
 
@@ -48,18 +42,6 @@ parser.add_option("-D", action="store_true", default=False, dest="doubleRatio",
 
 # Parse the input arguments
 (options, args) = parser.parse_args()
-
-
-# # h5=None
-# # Check if an h5 file has been passed, in case adat constructed dat files are not to be read
-# if not(options.adat):
-#     try:
-#         h5Numer=h5py.File(options.pgitdAmplitudesH5,'r')
-#         h5Denom=h5py.File(options.denomPseudoH5,'r')
-#     except:
-#         raise Exception("Pseudo H5 file not found - adat constructed dat files not to be read")
-#         sys.exit()
-# #-----------------------------------------------------------------------------------------------
 
 
 
@@ -134,31 +116,7 @@ else:
             # then kill the imaginary component, as ioffe time is zero
             if k == 2 and pitdDisp == "000":
                 corr.amplitude[k].params['b'] = np.zeros(options.cfgs)
-
             
-            #     if c[0] is None:
-            #         continue
-            #     else:
-            #         # Run over all displacements needed by pGITDs
-            #         for forwardDisp in allForwardDisps:
-            #             # Run over real/imag
-            #             for k,v in {1: 'real', 2: 'imag'}.items():
-            #                 # Read all data from pgitdAmplitudesH5 & denomPseudoH5
-            #                 c[0].amplitude[k] = fit_util.SR(options.denomPseudoH5,options.cfgs,\
-                #                                                 c[1],c[1],0,0,\
-                #                                                 forwardDisp,options.insertion,v,\
-                #                                                 tmin=int(options.tFitRange.split('.')[0]),
-            #                                                 tmax=int(options.tFitRange.split('.')[1]),\
-                #                                                 pdfH5=True)
-            #                 # NB pdfH5 =True will neglect passed rowf,rowi (two 0's above) & read pitd in old format
-            
-            
-            #                 # If the momentum or displacement is zero for c[0]
-            #                 # then kill the imaginary component, as ioffe time is zero
-            #                 if k == 2 and ( c[1] == "000" or forwardDisp == "000" ):
-            #                     c[0].amplitude[k].params['b'] = np.zeros(options.cfgs)
-            # #--------------------------------------------------------------------------------------------
-
     print(pitd)
     for k in pitd.keys():
         print(pitd[k].amplitude[1].params['b'][:])
@@ -171,15 +129,6 @@ if not options.denomPseudoH5WithoutSVD:
                            pitd.amplitudes['Y']['pf000_pi000,zsep000']['real']['err']))
     print("%.5f +/- %.5f"%(pitd.amplitudes['Y']['pf000_pi000,zsep001']['real']['avg'],\
                            pitd.amplitudes['Y']['pf000_pi000,zsep001']['real']['err']))
-    # print("%.5f +/- %.5f"%(pitd.amplitudes['Y']['pf000_pi000,zsep00-1']['real']['avg'],\
-        #                        pitd.amplitudes['Y']['pf000_pi000,zsep00-1']['real']['err']))
-    
-
-
-# Form the rpITD by combining fit results per jackknife sample of each amplitude
-# NO JACKKNIFING HERE!!!
-# rpGITD=pitd(boost,boostNoDisp,norm,normNoDisp,boost_negIT,boostNoDisp_negIT,\
-#             norm_negIT,normNoDisp_negIT,matStr='b')
 
 
 ############################################################################################################

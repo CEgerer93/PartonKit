@@ -4,15 +4,10 @@
 #         ln[ M(z+a,a,Pz) / M(z,a,Pz) ]
 ############
 import numpy as np
-import matplotlib.pyplot as plt
-import h5py
-import sys,optparse
-sys.path.append("/home/colin/QCD/pseudoDists/analysis/py-scripts/pseudo")
-sys.path.append("/home/colin/QCD/pseudoDists")
-import corr_util
-import fit_util
-import pitd_util
-import common_fig
+import optparse
+from util.fit_util import SR
+from util.pitd_util import toStr
+import util.common_fig
 
 usage = "Usage: %prog [options] "
 parser = optparse.OptionParser(usage);
@@ -27,10 +22,6 @@ parser.add_option("--pf", type="str", default='x.x.x',
                   help='Final Momenta <px>.<py>.<pz> (default = x.x.x)')
 parser.add_option("--pi", type="str", default='x.x.x',
                   help='Initial Momenta <px>.<py>.<pz> (default = x.x.x)')
-# parser.add_option("--rows", type="str", default='x.x',
-#                   help='Snk/src rows <snk row>.<src row> (default = x.x)')
-# parser.add_option("-g","--gamma", type="int", default=0,
-#                   help='Chroma gamma (default = 0)')
 parser.add_option("-c","--component", type="str", default='real',
                   help='Read component (default = real)')
 parser.add_option("-s", action="store_true", default=False, dest="showFig",
@@ -44,8 +35,8 @@ parser.add_option("--fwd", action="store_true", default=False, dest="fwdPDF",
 # Parse the input arguments
 (options, args) = parser.parse_args()
 
-pf=pitd_util.toStr(options.pf)
-pi=pitd_util.toStr(options.pi)
+pf=toStr(options.pf)
+pi=toStr(options.pi)
 
 
 tmin, tstep, tmax = options.fitTSeries.split('.')
@@ -102,11 +93,6 @@ for ng,gamma,col,ax in [(8,'gamma_4','b',ax4)] if options.fwdPDF else [(1,'gamma
                     ls=thisLineStyle)
 
 
-
-
-# plt.plot([z for z in range(1,9)],[-np.log(effMat[z]/effMat[z-1]) for z in range(1,9)],\
-#          'b',label=r'$\gamma_4$')
-
 ############################################
 # Add text indicating momenta/displacements
 ############################################
@@ -120,4 +106,3 @@ figX.savefig("eff-mass-renorm_gamma-x_pf%s_pi%s.%s.pdf"%(options.pf,options.pi,o
 figY.savefig("eff-mass-renorm_gamma-y_pf%s_pi%s.%s.pdf"%(options.pf,options.pi,options.component))
 fig4.savefig("eff-mass-renorm_gamma-4_pf%s_pi%s.%s.pdf"%(options.pf,options.pi,options.component))
 plt.show()
-    
